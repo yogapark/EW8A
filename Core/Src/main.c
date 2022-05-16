@@ -151,21 +151,16 @@ int main(void)
   {
 
 #if 1
-//	if(isSwitchFullMode())
-	if(1)
+	if(isSwitchFullMode())
 	{
 		OLED_SCREEN_ON();
 		if( is_IN_EN_ON() )
-//			if(isACC1on())
 		{
-				if (gCount_FullMode_setting_Time >= FULLMODE_ACTION_TEME)
-#if 1
+			if (gCount_FullMode_setting_Time >= FULLMODE_ACTION_TEME)
 				SC8915_FULL_mode();
-#else
-				SC8915_TEST_7A_mode();
-#endif
 			else
 				SC8915_HALF_mode();
+
 			HAL_Delay(10);
 			SC8915_R_DATA(0x0D, &read_buff[0],10);
 			HAL_Delay(10);
@@ -196,8 +191,7 @@ int main(void)
 	else //if(isSwitchHalfMode())
 	{
 		OLED_SCREEN_ON();
-		if( is_IN_EN2_ON() )
-//			if(isACC2on())
+		if( is_IN_EN_ON() )
 		{
 			SC8915_HALF_mode();
 			HAL_Delay(10);
