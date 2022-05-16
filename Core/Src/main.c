@@ -212,8 +212,8 @@ int main(void)
 				read_buff[i]=0;
 		}
 		Set_OUT_EN_ON();
-		OLED_display_string(2, 54, "HALF");
-		OLED_Screen_Clean(0, 54, 24);
+//		OLED_display_string(2, 54, "HALF");
+//		OLED_Screen_Clean(0, 54, 24);
 	}
 //	else
 //	{

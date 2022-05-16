@@ -6,3 +6,4 @@ STM32F030C8TX_FLASH.ld
 .metadata/
 .settings/language.settings.xml
 Debug/
+EW8A Debug.launch

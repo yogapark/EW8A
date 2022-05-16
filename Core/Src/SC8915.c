@@ -158,10 +158,10 @@ void SC8915_FULL_mode(void)
 //	SC8915_W_Command(0x04,0xC0);	// VBUSREF_E_SET2
 
 //	SC8915_W_Command(0x05,0x19);	// IBUS_LIM_SET
-	SC8915_W_Command(0x05,0xD2);	// IBUS_LIM_SET (D7 -> D2 ) 2021.12.08 v2.03
+	SC8915_W_Command(0x05,0xB4);	// IBUS_LIM_SET (D7 -> D2 ) 2021.12.08 v2.03
 
 //	SC8915_W_Command(0x06,0x20);	// IBAT_LIM_SET
-	SC8915_W_Command(0x06,0x55);	// IBAT_LIM_SET (57 -> 55 ) 2021.12.08 v2.03
+	SC8915_W_Command(0x06,0x4B);	// IBAT_LIM_SET (57 -> 55 ) 2021.12.08 v2.03
 
 
 	SC8915_W_Command(0x07,0x72);	// VINREG_SET  // 2021.12.08 ( 72->70 ) cutoff voltage
@@ -193,10 +193,10 @@ void SC8915_HALF_mode(void)
 //	SC8915_W_Command(0x04,0xC0);	// VBUSREF_E_SET2
 
 //	SC8915_W_Command(0x05,0x19);	// IBUS_LIM_SET
-	SC8915_W_Command(0x05,0x66);	// IBUS_LIM_SET
+	SC8915_W_Command(0x05,0x5A);	// IBUS_LIM_SET
 
 //	SC8915_W_Command(0x06,0x20);	// IBAT_LIM_SET
-	SC8915_W_Command(0x06,0x35);	// IBAT_LIM_SET
+	SC8915_W_Command(0x06,0x25);	// IBAT_LIM_SET
 
 	SC8915_W_Command(0x07,0x72);	// VINREG_SET // 2021.12.08 ( 72->70 ) cutoff voltage
 
