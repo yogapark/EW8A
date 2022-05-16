@@ -1,0 +1,8 @@
+.cproject
+.mxproject
+.project
+EW8A.ioc
+STM32F030C8TX_FLASH.ld
+.metadata/
+.settings/language.settings.xml
+Debug/

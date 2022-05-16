@@ -1,0 +1,157 @@
+** EW8A ** (2022.05.16) change name of the project.
+
+1. 보드 변경에 따른 프로젝트명 변경. 
+9_EW12APro_Jap -> EW8A
+
+
+** EW12APro_Jap_v204 ** (2022.04.27 ) version 2.04
+
+1. 버전에 맞춰 프로젝트명 변경. (폴더변경)
+9_EW12APro_Jap -> EW12APro_Jap_v204
+
+
+
+
+** 9_EW12A_Pro_Jap ** (2021.12.09 ) version 2.04
+
+ 1. version 2.03,2.02 수정내용 복귀
+
+  - if(mV_VBUS > 11400) 11200 으로 수정. 
+
+  - 남이사님 요청 sc8915_full_mode() 함수 파라메터 수정. ( half_mode 도 포함 )
+    // 2021.12.08 ( 72->70 ) cutoff voltage
+
+
+
+
+
+** 9_EW12A_Pro_Jap ** (2021.12.08 ) version 2.03
+
+ 1. 충전 전류 세팅값 수정. 
+  - sc8915_full_mode() 
+	SC8915_W_Command(0x05,0xD2);	// IBUS_LIM_SET (D7 -> D2 ) 2021.12.08 v2.02
+	SC8915_W_Command(0x06,0x55);	// IBAT_LIM_SET (57 -> 55 ) 2021.12.08 v2.02
+
+  - if(mV_VBUS > 11400) 11200 으로 수정. 
+
+
+** 9_EW12A_Pro_Jap ** (2021.12.08 ) version 2.02
+
+ 1. 남이사님 요청 sc8915_full_mode() 함수 파라메터 수정. ( half_mode 도 포함 )
+    // 2021.12.08 ( 72->70 ) cutoff voltage
+
+** 9_EW12A_Pro_Jap ** (2021.12.08 ) version 2.01
+
+ 1. 스위치 1번에 LED 동작변경 
+  -  if(isSwitchFullMode()) 에서 LED의 동작을 변경없이 항상 켜져있게 변경. 
+     HAL_TIM_PeriodElapsedCallback() 함수에 적용. 
+
+** 9_EW12A_Pro_Jap ** (2021.11.23 ) version 2.00  ( 이하버전 1.17 은 pic16f1824 사용 )
+
+ 1. 버전 변경 stm 칩을 사용한 12A Pro 버전을 나타냄.
+
+
+** 9_EW12A_Pro_Jap ** (2021.11.22 ) version 1.18  ( 이하버전 1.17 은 pic16f1824 사용 )
+
+ 1. ui 수정 작업. ( stm 버전에서, 이전 1.17 기준으로 수정 )
+  - acc,vin,tem, 아이콘2종. 전류는 유지. 
+
+
+
+
+** 9_030C8_SC8915_EW6A ** ( 2021.10.13 ) version 1.14
+
+ 1. SC8915_W_Command(0x09,0x05); 	// CTRL0_SET // modyfied by 2021.10.13  0x04-> 0x05
+
+
+** 9_030C8_SC8915_EW6A ** ( 2021.09.24 ) version 1.13
+
+ 1. 외부전원 입력시 OLED 화면 유지 
+   - 외부전원 대응 전원핀에 대응하던것 생략. (상관없이 Idle 타임 무한 갱신 -> OLED 전원 항상 유지 )
+
+
+
+
+** 9_030C8_SC8915_EW6A ** ( 2021.09.24 ) version 1.12
+
+ 1. 스위치 1번과 2번에 따라 OLED 전원 갱신을 분리.
+   - 스위치 1번일때 idle_oled 변수를 갱신하여 꺼지지 않게 한다. 
+   			if(isSwitchFullMode())
+				gCount_SCREEN_IDLE_TIME = 0;
+
+
+** 9_030C8_SC8915_EW6A ** ( 2021.09.24 ) version 1.11
+
+ 1. 스위치 전워 1에 대응하여 ACC off 시 LED 등의 전원이 일정시간후 off 되는 점을 수정하여 항상 켜지게 진행.
+    - timer 부분에서 일정시간후 꺼지는 부분을 막아서 처리함.
+ 
+
+
+** 9_030C8_SC8915_EW6A ** ( 2021.09.24 )
+
+1. version v110 버전 픽스.
+   - 스위치 변경에 따라  1.전원(LED ON), 2.전원 (LED OFF), 3.전원 off 로 동작하게 수정. 
+     > 전원 체크 함수를 무조건 동작하게 수정하여 진행.(쉽게 변경한부분)
+     
+   - LED 모두 동작. 
+   
+   
+** 7_030C8_SC8915_iRoad // version 1.07 
+
+
+
+
+
+** version 변경.
+
+ 1. 변경 프로젝트명 : 7_030C8_SC8915_iRoad
+ 기존 프로젝트명 : 9_030C8_SC8915_EW6A
+
+ 2. 버전 변경 방법. 
+
+7_030C8_SC8915_iRoad Debug.launch ← 삭제.
+7_030C8_SC8915_iRoad.ioc ( 파일이름 변경 )
+/.cproject 
+/.mxproject
+/.project
+/TouchGFX/ApplicationTemplate.touchgfx
+/TouchGFX/touchgfx_00_start
+
+
+
+
+** 01_030C8_SC8915_iRoad_v107 ** ( 2012.05.04 )
+1. version v107 버전 픽스.
+	7_030C8_SC8915_iRoad -> 01_030C8_SC8915_iRoad_v107
+
+** 7_030C8_SC8915_iRoad // version 1.07 
+
+
+
+** 2021. 04.05
+
+ 1. OLED_SetScreenOn(); 추가하여 최초 화면의 갱신을 막음.
+  
+ 
+ ** 2021. 03. 23
+ 
+ 1. GPIO 삭제 ( 스위치 2번 삭제 ) 
+  - 1번 GPIO on - FULL mode, off - HALF mode 대응.
+
+  - GPIOC, GPIO_PIN_15 를 확인하는 isSwitchHalfMode() 함수를 생략.
+
+  - Set_IN_EN_ON() 함수를 사용하는 곳 정리.
+  
+  
+
+
+** 7_030C8_SC8915_iRoad // v1.07 ( 2021. 03.17 ) 
+
+ 1. SC8915.C 함수 추가.
+  - SC8915_TEST_7A_mode() // 충전 전압 세팅 변경. (FULL 8A -> 7A )
+  - main() 함수에서 사용. 
+ 
+
+** 00_030C8_SC8915_iRoad_v106 ** ( 2021.01.26 )
+1. version v106 iRoad 최초 버전 픽스.
+	7_030C8_SC8915_iRoad -> 00_030C8_SC8915_iRoad_v106
