@@ -23,6 +23,7 @@
 #include "dma.h"
 #include "i2c.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -41,6 +42,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TEMP_HALF_MIN 0
+#define TEMP_HALF_MAX 50
+#define TEMP_PSTOP_CUTOFF 60
+#define TEMP_PSTOP_ON 55
 
 
 /* USER CODE END PD */
@@ -61,6 +66,10 @@ int nError = 0;
 int gCount_SCREEN_IDLE_TIME = 0;
 int gCount_FullMode_setting_Time = 0;
 
+int mcuTemp = 0;
+
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +83,14 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#ifdef __cplusplus
+extern "C" int _write(int32_t file, uint8_t *ptr, int32_t len) {
+#else
+int _write(int32_t file, uint8_t *ptr, int32_t len) {
+#endif
+    if( HAL_UART_Transmit(&huart1, ptr, len, len) == HAL_OK ) return len;
+    else return 0;
+}
 /* USER CODE END 0 */
 
 /**
@@ -116,7 +132,10 @@ int main(void)
   MX_TIM16_Init();
   MX_ADC_Init();
   MX_TIM6_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_ADCEx_Calibration_Start(&hadc);
 
   HAL_TIM_PWM_Start(&htim14 , TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim16 , TIM_CHANNEL_1);
@@ -128,6 +147,7 @@ int main(void)
   IN_EN2_voltage_Off();
   OUT_EN_voltage_Off();
   SC8915_PSTOP_Off();
+
 
   OLED_Init();
   OLED_Screen_Clear();
@@ -176,8 +196,8 @@ int main(void)
 			SC8915_R_DATA(0x0D, &read_buff[0],10);
 			HAL_Delay(10);
 
-			if(isSwitchFullMode())
-				gCount_SCREEN_IDLE_TIME = 0;
+//			if(isSwitchFullMode())
+//				gCount_SCREEN_IDLE_TIME = 0;
 		}
 		else
 		{
@@ -314,7 +334,10 @@ int main(void)
 
 #endif
 
+//	printf("%u ms tem: %dc, T3C:%d, T:%d, V:%d, VC:%d AS:%d \r\n", HAL_GetTick(),mcuTemperature(adcval[6]), *TEMP30_CAL_ADDR, adcval[6],adcval[7] , *VREFINT_CAL , AVG_SLOPE);
 
+//	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * (int32_t) adcval[7] ) / (int32_t) *VREFINT_CAL ) )  * 1000;
+//	temperature = (temperature /(int32_t) AVG_SLOPE) ;//+ 30;
 
 	OLED_display_Battery_Icon_wide(6,0,mV_VBAT);
 
@@ -322,8 +345,9 @@ int main(void)
 
 	OLED_display_live_action(8,83);
 
-	if(mV_VBUS > 11400)  // 2021.12.08 v2.03 (11400 -> 11200) v2.04 return.
+//	if(mV_VBUS > 11400)  // 2021.12.08 v2.03 (11400 -> 11200) v2.04 return.
 //		if(I_VALUE > 9000)
+	if(mV_VBUS > 11400 && mcuTemp <= TEMP_PSTOP_ON)
 	{
 		count_acc++;
 		if(count_acc > 5)
@@ -332,12 +356,13 @@ int main(void)
 			SC8915_PSTOP_On();
 		}
 	}
-	else
+	else if(mV_VBUS <= 11400 || mcuTemp >= TEMP_PSTOP_CUTOFF)
 	{
 		count_acc = 0;
 		SC8915_PSTOP_Off();
 	}
 
+#if 0
 	if(count_acc > 5)
 	{
 //		OLED_display_string(4, 54, "CHAR");
@@ -351,6 +376,16 @@ int main(void)
 //		OLED_Set_Address(4, 54);
 //		OLED_W_Num6x8(count_acc);
 	}
+
+#else
+	if( HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13)== GPIO_PIN_RESET )
+		OLED_W_Icon11x8(2,0,50); // display 'on icon' .
+    else
+		OLED_W_Icon11x8(0,0,50); // display 'off icon'.
+#endif
+
+
+
 
 	HAL_Delay(1000);
 
@@ -397,7 +432,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -432,7 +468,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 		}
 
-		if (isSwitchFullMode() )
+//		if (isSwitchFullMode() )
+		if (1 )
 		{
 			if(isACC1on())
 			{
@@ -441,11 +478,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			else
 			{
 // <- version 1.11
-//				if(gCount_SCREEN_IDLE_TIME >= DELAY_SCREEN_IDLE_TIME)
-//				{
-//					ccr = 0;
-//					ccr_test = 0;
-//				}
+				if(gCount_SCREEN_IDLE_TIME >= DELAY_SCREEN_IDLE_TIME)
+				{
+					ccr = 0;
+					ccr_test = 0;
+				}
 			}
 		}
 //		else //if (isSwitchHalfMode() )
@@ -485,8 +522,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			gCount_SCREEN_IDLE_TIME = DELAY_SCREEN_IDLE_TIME;
 
 
-		if( is_IN_EN_ON() )
-//			if( is_IN_EN_ON() && isSwitchFullMode() )
+//		if( is_IN_EN_ON() )
+			//			if( is_IN_EN_ON() && isSwitchFullMode() )
+		if( is_IN_EN_ON() && (mcuTemp >= TEMP_HALF_MIN) && (mcuTemp <= TEMP_HALF_MAX) )
 		{
 			gCount_FullMode_setting_Time++;
 			if(gCount_FullMode_setting_Time >= FULLMODE_ACTION_TEME)
@@ -529,6 +567,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 //	{
 //		;
 //	}
+	mcuTemp = mcuTemperature3();
 }
 
 

@@ -622,13 +622,16 @@ int mcuTemperature(uint16_t adcValue)
 {
 	int32_t temperature;
 //	temperature = ((uint32_t) *TEMP30_CAL_ADDR - ((uint32_t) adcValue * VDD_APPLI / VDD_CALIB)) * 1000;
-	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * (int32_t) adcval[7] ) / (int32_t) *VREFINT_CAL ) )  * 1000;
-	temperature = (temperature /(int32_t) AVG_SLOPE) ;//+ 30;
+//	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * (int32_t) adcval[7] ) / (int32_t) *VREFINT_CAL ) )  * 1000;
+//	temperature = (temperature /(int32_t) AVG_SLOPE) ;//+ 30;
+	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * (int32_t) *VREFINT_CAL ) / (int32_t) adcval[7] ) )  * 1000;
+	temperature = (temperature /(int32_t) AVG_SLOPE) + 23;
 //	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * 3530 ) / 3300 ) )  * 1000;
 //	temperature = (temperature /(int32_t) AVG_SLOPE) + 30;
 
 
 
+	printf("%u ms tem: %dc, T3C:%d, T:%d, V:%d, VC:%d AS:%d \r\n",HAL_GetTick(), temperature, *TEMP30_CAL_ADDR, adcval[6],adcval[7] , *VREFINT_CAL , AVG_SLOPE);
 
 
 //	temperature = (int32_t) *TEMP30_CAL_ADDR * 555 - (int32_t) adcValue * 505 - 5932 ;
@@ -662,6 +665,14 @@ int mcuTemperature2(uint16_t adcValue)
 	return temperature;
 }
 
+int mcuTemperature3(void)
+{
+	int32_t temperature;
+	temperature = ((int32_t) *TEMP30_CAL_ADDR - (((int32_t) adcval[6] * (int32_t) *VREFINT_CAL ) / (int32_t) adcval[7] ) )  * 1000;
+	temperature = (temperature /(int32_t) AVG_SLOPE) + 23;
+
+	return temperature;
+}
 
 void SC8915_work_per_Second(void)
 {

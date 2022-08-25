@@ -57,5 +57,6 @@ void SET_INPUT_Enable2(void);
 
 int mcuADCto_mV(uint16_t adcValue);
 int mcuTemperature(uint16_t adcValue);
+int mcuTemperature3(void);
 
 #endif /* INC_SC8915_H_ */

@@ -60,9 +60,9 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
 
-#define DELAY_SCREEN_IDLE_TIME 600 // second
+#define DELAY_SCREEN_IDLE_TIME 60 // second
 #define FULLMODE_ACTION_TEME 300 // second default 120.
-#define nVERSION 	101  // 101 -> 1.01 EW8A
+#define nVERSION 	104  // 101 -> 1.01 EW8A
 
 /* USER CODE END Private defines */
 
